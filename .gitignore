@@ -3,6 +3,9 @@ target/
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
+/target/
+*/target/**
+!.mvn/wrapper/maven-wrapper.jar
 
 # Compiled class file
 *.class
@@ -54,3 +57,5 @@ build/
 
 ### VS Code ###
 .vscode/
+
+.settings/
