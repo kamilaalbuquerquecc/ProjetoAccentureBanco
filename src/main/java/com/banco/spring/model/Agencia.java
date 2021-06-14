@@ -1,53 +1,51 @@
 package com.banco.spring.model;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
-
+import java.util.Set;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 
 @Entity
 public class Agencia implements Serializable{
 private static final long serialVersionUID = 1L;
 	
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
-    private String nome;
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	private Long idAgencia;
+    private String nomeAgencia;
     private String endereco;
     private String telefone;
-    
-    
-	//private List<Cliente> cliente = new ArrayList<>();
-
+      
     public Agencia() {
-
     }
-
-    public Agencia(Long id, String nome, String endereco, String telefone) {
-        this.id = id;
-        this.nome = nome;
+    
+    public Agencia(Long idAgencia, String nomeAgencia, String endereco, String telefone) {
+        this.idAgencia = idAgencia;
+        this.nomeAgencia = nomeAgencia;
         this.endereco = endereco;
         this.telefone = telefone;
     }
 
+    @OneToMany(mappedBy="agencia")
+    private Set<Cliente> cliente;
+    
     public Long getIdAgencia() {
-        return id;
+        return idAgencia;
     }
 
     public void setIdAgencia(Long idAgencia) {
-        this.id = idAgencia;
+        this.idAgencia = idAgencia;
     }
 
-    public String getNome() {
-        return nome;
+    public String getNomeAgencia() {
+        return nomeAgencia;
     }
 
-    public void setNome(String nome) {
-        this.nome = nome;
+    public void setNomeAgencia(String nomeAgencia) {
+        this.nomeAgencia = nomeAgencia;
     }
 
     public String getEndereco() {
@@ -70,7 +68,7 @@ private static final long serialVersionUID = 1L;
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((id == null) ? 0 : id.hashCode());
+		result = prime * result + ((idAgencia == null) ? 0 : idAgencia.hashCode());
 		return result;
 	}
 
@@ -83,10 +81,10 @@ private static final long serialVersionUID = 1L;
 		if (getClass() != obj.getClass())
 			return false;
 		Agencia other = (Agencia) obj;
-		if (id == null) {
-			if (other.id != null)
+		if (idAgencia == null) {
+			if (other.idAgencia != null)
 				return false;
-		} else if (!id.equals(other.id))
+		} else if (!idAgencia.equals(other.idAgencia))
 			return false;
 		return true;
 	}

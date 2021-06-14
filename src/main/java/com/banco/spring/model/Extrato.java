@@ -7,6 +7,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 
 import com.banco.spring.model.enums.Operacao;
 
@@ -19,6 +21,9 @@ public class Extrato implements Serializable{
 	private Long id;
     private LocalDate dataHoraMovimento;
     private Operacao operacao;
+    @ManyToOne
+	@JoinColumn(name = "contaCorrente_id", nullable = false)
+	private ContaCorrente contaCorrente;
 
     public Extrato() {
 

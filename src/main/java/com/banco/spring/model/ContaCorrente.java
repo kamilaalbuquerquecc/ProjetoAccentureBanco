@@ -1,36 +1,45 @@
 package com.banco.spring.model;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.io.Serializable;
+import java.util.Set;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 
 @Entity
-public class ContaCorrente {
-private static final long serialVersionUID = 1L;
+public class ContaCorrente implements Serializable{
+	
+	private static final long serialVersionUID = 1L;
 	
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
-	private String numeroAgencia; //vai ser usado só quando for guardar o dado da conta corente
-    private String numeroContaCorrente;
-    private double saldoContaCorrente;
+	private String numeroAgencia; // vai ser usado só quando for guardar o dado da conta corente
+	private String numeroContaCorrente;
+	private double saldoContaCorrente;
+	@ManyToOne
+	@JoinColumn(name = "cliente_id", nullable = false)
+	private Cliente cliente;
 
-    //private List<Extrato> extrato = new ArrayList<>();
-    
-    public ContaCorrente() {
+	// private List<Extrato> extrato = new ArrayList<>();
 
-    }
+	public ContaCorrente() {
 
-    public ContaCorrente(Long id, String numeroContaCorrente, double saldoContaCorrente) {
-        this.id = id;
-        this.numeroContaCorrente = numeroContaCorrente;
-        this.saldoContaCorrente = saldoContaCorrente;
-    }
-    
+	}
+
+	public ContaCorrente(Long id, String numeroContaCorrente, double saldoContaCorrente) {
+		this.id = id;
+		this.numeroContaCorrente = numeroContaCorrente;
+		this.saldoContaCorrente = saldoContaCorrente;
+	}
+	
+	@OneToMany(mappedBy="contaCorrente")
+    private Set<Extrato> extrato;
 
 	public Long getId() {
 		return id;
@@ -88,8 +97,5 @@ private static final long serialVersionUID = 1L;
 			return false;
 		return true;
 	}
-    
-
-
 
 }

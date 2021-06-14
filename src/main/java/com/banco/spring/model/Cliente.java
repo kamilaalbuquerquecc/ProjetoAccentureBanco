@@ -1,38 +1,44 @@
 package com.banco.spring.model;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Set;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 
 @Entity
 public class Cliente implements Serializable{
 
 	private static final long serialVersionUID = 1L;
-	
+
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
 	private String nome;
 	private String cpf;
 	private String telefone;
-	
-	//private List<ContaCorrente> conta = new ArrayList<>();
-	
-	public Cliente(){
-		
+	@ManyToOne
+    @JoinColumn(name="agencia_idAgencia", nullable=false)
+    private Agencia agencia;
+
+	public Cliente() {
+
 	}
 
-	public Cliente(Long id,  String nome,String cpf, String telefone) {
+	public Cliente(Long id, String nome, String cpf, String telefone) {
 		this.id = id;
 		this.nome = nome;
 		this.cpf = cpf;
 		this.telefone = telefone;
 	}
+	
+	@OneToMany(mappedBy="cliente")
+    private Set<ContaCorrente> contaCorrente;
 
 	public Long getId() {
 		return id;
@@ -90,7 +96,4 @@ public class Cliente implements Serializable{
 			return false;
 		return true;
 	}
-	
-	
-
 }
