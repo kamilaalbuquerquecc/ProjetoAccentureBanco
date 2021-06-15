@@ -49,6 +49,22 @@ public class ContaCorrente implements Serializable {
 		this.numeroContaCorrente = numeroContaCorrente;
 		this.saldoContaCorrente = saldoContaCorrente;
 	}
+	public void saque(float valor) {
+		if (valor < this.saldoContaCorrente) {
+			this.saldoContaCorrente -= valor;
+		}
+	}
+
+	public void deposito(double valor) {
+	    this.saldoContaCorrente += valor;
+    }
+
+    public void transferencia(ContaCorrente conta, double valor) {
+        if (valor < this.saldoContaCorrente) {
+        	this.saldoContaCorrente -= valor;
+        	conta.deposito(valor);
+		}
+    }
 
 	public Long getId() {
 		return id;

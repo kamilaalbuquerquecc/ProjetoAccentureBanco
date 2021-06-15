@@ -78,4 +78,50 @@ public class ContaCorrenteController {
 		} else
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 	}
+	
+	@RequestMapping(value = "/contaCorrente/{id}/saque", method =  RequestMethod.PUT)
+	public ResponseEntity<ContaCorrente> Saque(@PathVariable(value = "id") long id, float valor)
+	{
+		Optional<ContaCorrente> conta = _contaCorrenteRepository.findById(id);
+		if (conta != null) {
+			ContaCorrente contaCorrente = conta.get();
+			contaCorrente.saque(valor);
+			_contaCorrenteRepository.save(contaCorrente);
+			return new ResponseEntity<>(HttpStatus.OK);
+		} else {
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}
+	}
+
+	@RequestMapping(value = "/contaCorrente/{id}/deposito", method =  RequestMethod.PUT)
+	public ResponseEntity<ContaCorrente> Deposito(@PathVariable(value = "id") long id, double valor)
+	{
+		Optional<ContaCorrente> conta = _contaCorrenteRepository.findById(id);
+		if (conta != null) {
+			ContaCorrente contaCorrente = conta.get();
+			contaCorrente.deposito(valor);
+			_contaCorrenteRepository.save(contaCorrente);
+			return new ResponseEntity<>(HttpStatus.OK);
+		} else {
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}
+	}
+
+	@RequestMapping(value = "/contaCorrente/{id}/transferencia", method =  RequestMethod.PUT)
+	public ResponseEntity<ContaCorrente> Tranferencia(@PathVariable(value = "id") long idPagar,
+											 long idReceber, double valor)
+	{
+		Optional<ContaCorrente> transferir = _contaCorrenteRepository.findById(idPagar);
+		Optional<ContaCorrente> transferido = _contaCorrenteRepository.findById(idReceber);
+		if (transferir != null || transferido != null) {
+			ContaCorrente pagar = transferir.get();
+			ContaCorrente receber = transferido.get();
+			pagar.transferencia(receber, valor);
+			_contaCorrenteRepository.save(pagar);
+			_contaCorrenteRepository.save(receber);
+			return new ResponseEntity<>(HttpStatus.OK);
+		} else {
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}
+}
 }
