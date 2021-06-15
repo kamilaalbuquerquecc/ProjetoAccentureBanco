@@ -1,25 +1,34 @@
 package com.banco.spring.model;
 
 import java.io.Serializable;
-import java.util.Set;
+import java.util.List;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 public class Agencia implements Serializable{
 private static final long serialVersionUID = 1L;
 	
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long idAgencia;
     private String nomeAgencia;
     private String endereco;
     private String telefone;
+    
+    @JsonIgnore
+    @OneToMany
+    @JoinColumn(name="idAgencia")
+    private List<Cliente> cliente;
       
-    public Agencia() {
+	public Agencia() {
     }
     
     public Agencia(Long idAgencia, String nomeAgencia, String endereco, String telefone) {
@@ -28,9 +37,6 @@ private static final long serialVersionUID = 1L;
         this.endereco = endereco;
         this.telefone = telefone;
     }
-
-    @OneToMany(mappedBy="agencia")
-    private Set<Cliente> cliente;
     
     public Long getIdAgencia() {
         return idAgencia;
@@ -63,6 +69,10 @@ private static final long serialVersionUID = 1L;
     public void setTelefone(String telefone) {
         this.telefone = telefone;
     }
+    
+    public List<Cliente> getCliente() {
+		return cliente;
+	}
 
 	@Override
 	public int hashCode() {

@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.Set;
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -11,22 +12,33 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
-public class ContaCorrente implements Serializable{
-	
+public class ContaCorrente implements Serializable {
+
 	private static final long serialVersionUID = 1L;
-	
+
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	private String numeroAgencia; // vai ser usado só quando for guardar o dado da conta corente
 	private String numeroContaCorrente;
 	private double saldoContaCorrente;
-	@ManyToOne
-	@JoinColumn(name = "cliente_id", nullable = false)
-	private Cliente cliente;
 
-	// private List<Extrato> extrato = new ArrayList<>();
+	@JsonIgnore
+	@ManyToOne(fetch = FetchType.LAZY)
+	@OnDelete(action = OnDeleteAction.CASCADE)
+	@JoinColumn(name = "idCliente")
+	private Cliente cliente;
+	
+	@JsonIgnore
+    @OneToMany
+    @JoinColumn(name="idConta")
+    private Set<Extrato> extrato;
 
 	public ContaCorrente() {
 
@@ -37,9 +49,6 @@ public class ContaCorrente implements Serializable{
 		this.numeroContaCorrente = numeroContaCorrente;
 		this.saldoContaCorrente = saldoContaCorrente;
 	}
-	
-	@OneToMany(mappedBy="contaCorrente")
-    private Set<Extrato> extrato;
 
 	public Long getId() {
 		return id;
@@ -71,6 +80,14 @@ public class ContaCorrente implements Serializable{
 
 	public void setSaldoContaCorrente(double saldoContaCorrente) {
 		this.saldoContaCorrente = saldoContaCorrente;
+	}
+
+	public Cliente getCliente() {
+		return cliente;
+	}
+
+	public void setCliente(Cliente cliente) {
+		this.cliente = cliente;
 	}
 
 	@Override

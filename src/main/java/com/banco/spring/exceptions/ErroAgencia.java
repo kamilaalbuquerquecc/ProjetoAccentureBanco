@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 
 
 public class ErroAgencia {
+	
 	static final String NOME_ESTA_VAZIO = "Nome iválido";
 	static final String ENDERECO_ESTA_VAZIO = "Endereço iválido";
 	static final String TELEFONE_ESTA_VAZIO = "Telefone iválido";

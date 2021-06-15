@@ -4,12 +4,20 @@ import java.io.Serializable;
 import java.util.Set;
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
+
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 public class Cliente implements Serializable{
@@ -17,17 +25,26 @@ public class Cliente implements Serializable{
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	private String nome;
+	
+	//@Pattern(regexp="([0-9]{3}[.]?[0-9]{3}[.]?[0-9]{3}-[0-9]{2})|([0-9]{11})")
 	private String cpf;
 	private String telefone;
-	@ManyToOne
-    @JoinColumn(name="agencia_idAgencia", nullable=false)
+	
+	@JsonIgnore
+	@ManyToOne(fetch = FetchType.LAZY)
+	@OnDelete(action = OnDeleteAction.CASCADE)
+    @JoinColumn(name="idAgencia")
     private Agencia agencia;
+	
+	@JsonIgnore
+    @OneToMany
+    @JoinColumn(name="idCliente")
+    private Set<ContaCorrente> contaCorrente;
 
 	public Cliente() {
-
 	}
 
 	public Cliente(Long id, String nome, String cpf, String telefone) {
@@ -36,9 +53,6 @@ public class Cliente implements Serializable{
 		this.cpf = cpf;
 		this.telefone = telefone;
 	}
-	
-	@OneToMany(mappedBy="cliente")
-    private Set<ContaCorrente> contaCorrente;
 
 	public Long getId() {
 		return id;
@@ -70,6 +84,22 @@ public class Cliente implements Serializable{
 
 	public void setTelefone(String telefone) {
 		this.telefone = telefone;
+	}
+	
+	public Agencia getAgencia() {
+		return agencia;
+	}
+
+	public void setAgencia(Agencia agencia) {
+		this.agencia = agencia;
+	}
+
+	public Set<ContaCorrente> getContaCorrente() {
+		return contaCorrente;
+	}
+
+	public void setContaCorrente(Set<ContaCorrente> contaCorrente) {
+		this.contaCorrente = contaCorrente;
 	}
 
 	@Override

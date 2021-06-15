@@ -25,12 +25,12 @@ public class ExtratoController {
 	private ExtratoRepository _extratoRepository;
 
 	@RequestMapping(value = "/extrato", method = RequestMethod.GET)
-	public List<Extrato> Get() {
+	public List<Extrato> Listar_Extrato() {
 		return _extratoRepository.findAll();
 	}
 
 	@RequestMapping(value = "/extrato/{id}", method = RequestMethod.GET)
-	public ResponseEntity<Extrato> GetById(@PathVariable(value = "id") long id)
+	public ResponseEntity<Extrato> Procurar_Extrato(@PathVariable(value = "id") long id)
 	{
 		Optional<Extrato> extrato = _extratoRepository.findById(id);
 		if(extrato.isPresent())
@@ -40,13 +40,13 @@ public class ExtratoController {
 	}
 
 	@RequestMapping(value = "/extrato", method =  RequestMethod.POST)
-	public Extrato Post(@Valid @RequestBody Extrato extrato)
+	public Extrato Criar_Extrato(@Valid @RequestBody Extrato extrato)
 	{
 		return _extratoRepository.save(extrato);
 	}
 
 	@RequestMapping(value = "/extrato/{id}", method =  RequestMethod.PUT)
-	public ResponseEntity<Extrato> Put(@PathVariable(value = "id") long id, @Valid @RequestBody Extrato newExtrato)
+	public ResponseEntity<Extrato> Atualizar_Extrato(@PathVariable(value = "id") long id, @Valid @RequestBody Extrato newExtrato)
 	{
 		Optional<Extrato> oldExtrato = _extratoRepository.findById(id);
 		if(oldExtrato.isPresent()){
@@ -63,7 +63,7 @@ public class ExtratoController {
 	
 
 	@RequestMapping(value = "/extrato/{id}", method = RequestMethod.DELETE)
-	public ResponseEntity<Object> Delete(@PathVariable(value = "id") long id)
+	public ResponseEntity<Object> Deletar_Extrato(@PathVariable(value = "id") long id)
 	{
 		Optional<Extrato> extrato = _extratoRepository.findById(id);
 		if(extrato.isPresent()){
