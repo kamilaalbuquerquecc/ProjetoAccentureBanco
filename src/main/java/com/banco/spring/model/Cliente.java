@@ -29,7 +29,7 @@ public class Cliente implements Serializable{
 	private Long id;
 	private String nome;
 	
-	//@Pattern(regexp="([0-9]{3}[.]?[0-9]{3}[.]?[0-9]{3}-[0-9]{2})|([0-9]{11})")
+	@Pattern(regexp="([0-9]{3}[.]?[0-9]{3}[.]?[0-9]{3}-[0-9]{2})|([0-9]{11})")
 	private String cpf;
 	private String telefone;
 	
