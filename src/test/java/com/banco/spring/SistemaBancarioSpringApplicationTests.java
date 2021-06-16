@@ -16,8 +16,6 @@ import com.banco.spring.repository.ContaCorrenteRepository;
 
 @SpringBootTest
 class SistemaBancarioSpringApplicationTests {
-
-	ClienteController controllerCliente;
 	
 	@Autowired
 	private ClienteRepository _clienteRepository;
