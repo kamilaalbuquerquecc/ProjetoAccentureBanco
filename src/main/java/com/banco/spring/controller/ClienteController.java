@@ -50,7 +50,7 @@ public class ClienteController {
 			@RequestParam() String cpf, @RequestParam String telefone) {
 		Agencia agencia = _agenciaRepository.getOne(idAgencia);
 		Cliente cliente = new Cliente();
-		if(cpf.length()<11 || cpf.length()>11) {
+		if(cpf.length()<11 || cpf.length()>14) {
 			cet = new CustomErrorType("CPF inválido!");
 			return new ResponseEntity<>(cet.getErrorMessage(),HttpStatus.OK);
 			
