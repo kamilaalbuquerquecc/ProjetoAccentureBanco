@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.banco.spring.exceptions.CustomErrorType;
 import com.banco.spring.model.Cliente;
 import com.banco.spring.model.ContaCorrente;
 import com.banco.spring.repository.ClienteRepository;
@@ -80,16 +81,23 @@ public class ContaCorrenteController {
 	}
 	
 	@RequestMapping(value = "/contaCorrente/{id}/saque", method =  RequestMethod.PUT)
-	public ResponseEntity<ContaCorrente> Saque(@PathVariable(value = "id") long id, float valor)
+	public ResponseEntity<?> Saque(@PathVariable(value = "id") long id, float valor)
 	{
 		Optional<ContaCorrente> conta = _contaCorrenteRepository.findById(id);
-		if (conta != null) {
+		CustomErrorType cet;
+		try  {
 			ContaCorrente contaCorrente = conta.get();
-			contaCorrente.saque(valor);
-			_contaCorrenteRepository.save(contaCorrente);
-			return new ResponseEntity<>(HttpStatus.OK);
-		} else {
-			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+			if(conta.get().getSaldoContaCorrente()>=valor) {
+				contaCorrente.saque(valor);
+				_contaCorrenteRepository.save(contaCorrente);
+				return new ResponseEntity<>(HttpStatus.OK);}
+			else {
+				cet = new CustomErrorType("Valor indisponivel para saque!");
+				return new ResponseEntity<>(cet.getErrorMessage(),HttpStatus.OK);
+			}
+		} catch (Exception e){
+			cet = new CustomErrorType("Conta inexistente");
+			return new ResponseEntity<>(cet.getErrorMessage(),HttpStatus.OK);
 		}
 	}
 

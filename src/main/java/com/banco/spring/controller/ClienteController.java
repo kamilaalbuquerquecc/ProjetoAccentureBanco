@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.banco.spring.exceptions.CustomErrorType;
 import com.banco.spring.exceptions.ErroCliente;
 import com.banco.spring.model.Agencia;
 import com.banco.spring.model.Cliente;
@@ -28,6 +29,8 @@ public class ClienteController {
 	@Autowired
 	private AgenciaRepository _agenciaRepository;
 
+	private CustomErrorType cet;
+	
 	@RequestMapping(value = "/cliente", method = RequestMethod.GET)
 	public List<Cliente> Listar_Clientes() {
 		return _clienteRepository.findAll();
@@ -47,13 +50,18 @@ public class ClienteController {
 			@RequestParam() String cpf, @RequestParam String telefone) {
 		Agencia agencia = _agenciaRepository.getOne(idAgencia);
 		Cliente cliente = new Cliente();
-		cliente.setAgencia(agencia);
-		cliente.setNome(nome);
-		cliente.setCpf(cpf);
-		cliente.setTelefone(telefone);
-		_clienteRepository.save(cliente);
-		return new ResponseEntity<>(HttpStatus.OK);
-		
+		if(cpf.length()<11 || cpf.length()>11) {
+			cet = new CustomErrorType("CPF inválido!");
+			return new ResponseEntity<>(cet.getErrorMessage(),HttpStatus.OK);
+			
+		}else {
+			cliente.setAgencia(agencia);
+			cliente.setNome(nome);
+			cliente.setCpf(cpf);
+			cliente.setTelefone(telefone);
+			_clienteRepository.save(cliente);
+			return new ResponseEntity<>(HttpStatus.OK);}
+			
 	}
 
 	@RequestMapping(value = "/cliente/{id}", method = RequestMethod.PUT)

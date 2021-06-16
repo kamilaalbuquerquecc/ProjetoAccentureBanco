@@ -11,7 +11,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
-import javax.validation.constraints.Pattern;
+
 import javax.validation.constraints.Size;
 
 import org.hibernate.annotations.OnDelete;
@@ -29,7 +29,7 @@ public class Cliente implements Serializable{
 	private Long id;
 	private String nome;
 	
-	@Pattern(regexp="([0-9]{3}[.]?[0-9]{3}[.]?[0-9]{3}-[0-9]{2})|([0-9]{11})")
+	@Size(min=11,max = 14)
 	private String cpf;
 	private String telefone;
 	

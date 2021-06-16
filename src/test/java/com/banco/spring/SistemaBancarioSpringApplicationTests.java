@@ -9,5 +9,4 @@ class SistemaBancarioSpringApplicationTests {
 	@Test
 	void contextLoads() {
 	}
-
 }
