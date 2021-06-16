@@ -26,7 +26,7 @@ public class ClienteController {
 	private AgenciaRepository _agenciaRepository;
 
 	private CustomErrorType cet;
-	
+
 	@RequestMapping(value = "/cliente", method = RequestMethod.GET)
 	public List<Cliente> Listar_Clientes() {
 		return _clienteRepository.findAll();
@@ -39,68 +39,83 @@ public class ClienteController {
 			return new ResponseEntity<Cliente>(cliente.get(), HttpStatus.OK);
 		else {
 			cet = new CustomErrorType("Cliente inexistente!");
-			return new ResponseEntity<>(cet.getErrorMessage(),HttpStatus.OK);
+			return new ResponseEntity<>(cet.getErrorMessage(), HttpStatus.NOT_FOUND);
 		}
 	}
 
 	@RequestMapping(value = "/cliente", method = RequestMethod.POST)
 	public ResponseEntity<?> Criar_Cliente(@RequestParam long idAgencia, @RequestParam String nome,
 			@RequestParam() String cpf, @RequestParam String telefone) {
-		
+
 		try {
 			Agencia agencia = _agenciaRepository.getOne(idAgencia);
 			Cliente cliente = new Cliente();
-			
-			 if(cpf.length()<11 || cpf.length()>14) {
+
+			if (cpf.length() < 11 || cpf.length() > 14) {
 				cet = new CustomErrorType("CPF inválido!");
-				return new ResponseEntity<>(cet.getErrorMessage(),HttpStatus.OK);
-				
-			}else if(telefone.length()!=11) {
+				return new ResponseEntity<>(cet.getErrorMessage(), HttpStatus.FORBIDDEN);
+
+			} else if (telefone.length() != 11) {
 				cet = new CustomErrorType("Telefone inválido!");
-				return new ResponseEntity<>(cet.getErrorMessage(),HttpStatus.OK);
-			}
-			else {
-				//impossivel alterar agencia
+				return new ResponseEntity<>(cet.getErrorMessage(), HttpStatus.FORBIDDEN);
+			} else {
 				cliente.setAgencia(agencia);
 				cliente.setNome(nome);
 				cliente.setCpf(cpf);
 				cliente.setTelefone(telefone);
 				_clienteRepository.save(cliente);
 				return new ResponseEntity<>(HttpStatus.OK);
-				}
-		}catch(Exception e) {
-			cet = new CustomErrorType("Agencia inválida!");
-			return new ResponseEntity<>(cet.getErrorMessage(),HttpStatus.OK);
+			}
+		} catch (Exception e) {
+			cet = new CustomErrorType("Agencia inexistente!");
+			return new ResponseEntity<>(cet.getErrorMessage(), HttpStatus.NOT_FOUND);
 		}
-			
 	}
 
 	@RequestMapping(value = "/cliente/{id}", method = RequestMethod.PUT)
-	public ResponseEntity<?> Atualizar_Cliente(@PathVariable(value = "id") long id, 
-			@RequestParam String nome,@RequestParam String cpf, @RequestParam String telefone) {
-		
-		
-		Optional<Cliente> oldCliente = _clienteRepository.findById(id);
+	public ResponseEntity<?> Atualizar_Cliente(@PathVariable(value = "id") long idCliente, long idAgencia, String nome,
+			String cpf, String telefone) {
+
+		Optional<Cliente> oldCliente = _clienteRepository.findById(idCliente);
+
 		if (oldCliente.isPresent()) {
-			if(cpf.length()<11 || cpf.length()>14) {
-				cet = new CustomErrorType("CPF inválido!");
-				return new ResponseEntity<>(cet.getErrorMessage(),HttpStatus.OK);
-				
-			}else if(telefone.length()!=11) {
-				cet = new CustomErrorType("Telefone inválido!");
-				return new ResponseEntity<>(cet.getErrorMessage(),HttpStatus.OK);
+			Cliente cliente = oldCliente.get();
+			if (idAgencia != 0L) {
+				Optional<Agencia> agenciaFind = _agenciaRepository.findById(idAgencia);
+				if (agenciaFind.isPresent()) {
+					Agencia agencia = agenciaFind.get();
+					cliente.setAgencia(agencia);
+				}
+				else {
+					cet = new CustomErrorType("Agencia inexistente!");
+					return new ResponseEntity<>(cet.getErrorMessage(), HttpStatus.NOT_FOUND);
+				}
 			}
-			else {
-				Cliente cliente = oldCliente.get();
+			if (nome != null) {
 				cliente.setNome(nome);
-				cliente.setCpf(cpf);
-				cliente.setTelefone(telefone);
-				_clienteRepository.save(cliente);
-				return new ResponseEntity<Cliente>(cliente, HttpStatus.OK);
 			}
+			if (cpf != null) {
+				if (cpf.length() < 11 || cpf.length() > 14) {
+					cet = new CustomErrorType("CPF inválido!");
+					return new ResponseEntity<>(cet.getErrorMessage(), HttpStatus.FORBIDDEN);
+
+				} else {
+					cliente.setCpf(cpf);
+				}
+			}
+			if (telefone != null) {
+				if (telefone.length() != 11) {
+					cet = new CustomErrorType("Telefone inválido!");
+					return new ResponseEntity<>(cet.getErrorMessage(), HttpStatus.FORBIDDEN);
+				} else {
+					cliente.setTelefone(telefone);
+				}
+			}
+			_clienteRepository.save(cliente);
+			return new ResponseEntity<Cliente>(cliente, HttpStatus.OK);
 		} else {
 			cet = new CustomErrorType("Cliente inexistente!");
-			return new ResponseEntity<>(cet.getErrorMessage(),HttpStatus.OK);
+			return new ResponseEntity<>(cet.getErrorMessage(), HttpStatus.NOT_FOUND);
 		}
 	}
 
@@ -112,7 +127,7 @@ public class ClienteController {
 			return new ResponseEntity<>(HttpStatus.OK);
 		} else {
 			cet = new CustomErrorType("Cliente inexistente!");
-			return new ResponseEntity<>(cet.getErrorMessage(),HttpStatus.OK);
+			return new ResponseEntity<>(cet.getErrorMessage(), HttpStatus.NOT_FOUND);
 		}
 	}
 }

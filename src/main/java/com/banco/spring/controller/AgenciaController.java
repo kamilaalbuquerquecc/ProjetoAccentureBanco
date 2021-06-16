@@ -22,7 +22,7 @@ public class AgenciaController {
 	private AgenciaRepository _agenciaRepository;
 
 	private CustomErrorType cet;
-	
+
 	@RequestMapping(value = "/agencia", method = RequestMethod.GET)
 	public List<Agencia> Listar_Agencias() {
 		return _agenciaRepository.findAll();
@@ -34,19 +34,18 @@ public class AgenciaController {
 		if (agencia.isPresent())
 			return new ResponseEntity<Agencia>(agencia.get(), HttpStatus.OK);
 		else {
-			cet = new CustomErrorType("Cliente inexistente!");
-			return new ResponseEntity<>(cet.getErrorMessage(),HttpStatus.OK);
+			cet = new CustomErrorType("Agencia inexistente!");
+			return new ResponseEntity<>(cet.getErrorMessage(), HttpStatus.NOT_FOUND);
 		}
 	}
 
 	@RequestMapping(value = "/agencia", method = RequestMethod.POST)
 	public ResponseEntity<?> Criar_Agencia(@RequestParam String nomeAgencia, @RequestParam String endereco,
 			@RequestParam String telefone) {
-		if(telefone.length()!=11) {
+		if (telefone.length() != 11) {
 			cet = new CustomErrorType("Telefone inválido!");
-			return new ResponseEntity<>(cet.getErrorMessage(),HttpStatus.OK);
-		}
-		else {
+			return new ResponseEntity<>(cet.getErrorMessage(), HttpStatus.FORBIDDEN);
+		} else {
 			Agencia agencia = new Agencia();
 			agencia.setNomeAgencia(nomeAgencia);
 			agencia.setEndereco(endereco);
@@ -57,26 +56,32 @@ public class AgenciaController {
 	}
 
 	@RequestMapping(value = "/agencia/{id}", method = RequestMethod.PUT)
-	public ResponseEntity<?> Atualizar_Agencia(@PathVariable(value = "id") long id, @RequestParam String nomeAgencia, 
-			@RequestParam String endereco, @RequestParam String telefone) {
-		//refazer codigo
-		Optional<Agencia> oldAgencia = _agenciaRepository.findById(id);
+	public ResponseEntity<?> Atualizar_Agencia(@PathVariable(value = "id") long idAgencia, String nomeAgencia,
+			String endereco, String telefone) {
+		Optional<Agencia> oldAgencia = _agenciaRepository.findById(idAgencia);
 		if (oldAgencia.isPresent()) {
-			if(telefone.length()!=11) {
-				cet = new CustomErrorType("Telefone inválido!");
-				return new ResponseEntity<>(cet.getErrorMessage(),HttpStatus.OK);
-			}
 			Agencia agencia = oldAgencia.get();
-			agencia.setNomeAgencia(nomeAgencia);
-			agencia.setEndereco(endereco);
-			agencia.setTelefone(telefone);
+			if (nomeAgencia != null) {
+				agencia.setNomeAgencia(nomeAgencia);
+			}
+			if (endereco != null) {
+				agencia.setEndereco(endereco);
+			}
+			if (telefone != null) {
+				if (telefone.length() != 11) {
+					cet = new CustomErrorType("Telefone inválido!");
+					return new ResponseEntity<>(cet.getErrorMessage(), HttpStatus.FORBIDDEN);
+				} else {
+					agencia.setTelefone(telefone);
+				}
+			}
 			_agenciaRepository.save(agencia);
 			return new ResponseEntity<Agencia>(agencia, HttpStatus.OK);
 		}
-			
+
 		cet = new CustomErrorType("Agencia inexistente!");
-		return new ResponseEntity<>(cet.getErrorMessage(),HttpStatus.OK);
-		
+		return new ResponseEntity<>(cet.getErrorMessage(), HttpStatus.NOT_FOUND);
+
 	}
 
 	@RequestMapping(value = "/agencia/{id}", method = RequestMethod.DELETE)
@@ -87,7 +92,7 @@ public class AgenciaController {
 			return new ResponseEntity<>(HttpStatus.OK);
 		} else {
 			cet = new CustomErrorType("Agencia inexistente!");
-			return new ResponseEntity<>(cet.getErrorMessage(),HttpStatus.OK);
-			}
+			return new ResponseEntity<>(cet.getErrorMessage(), HttpStatus.NOT_FOUND);
+		}
 	}
 }
