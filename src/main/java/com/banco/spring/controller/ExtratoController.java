@@ -14,8 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-
-
+import com.banco.spring.exceptions.CustomErrorType;
 import com.banco.spring.model.Extrato;
 import com.banco.spring.repository.ExtratoRepository;
 
@@ -24,19 +23,23 @@ public class ExtratoController {
 	@Autowired
 	private ExtratoRepository _extratoRepository;
 
+	private CustomErrorType cet;
+
 	@RequestMapping(value = "/extrato", method = RequestMethod.GET)
 	public List<Extrato> Listar_Extrato() {
 		return _extratoRepository.findAll();
 	}
 
 	@RequestMapping(value = "/extrato/{id}", method = RequestMethod.GET)
-	public ResponseEntity<Extrato> Procurar_Extrato(@PathVariable(value = "id") long id)
+	public ResponseEntity<?> Procurar_Extrato(@PathVariable(value = "id") long id)
 	{
 		Optional<Extrato> extrato = _extratoRepository.findById(id);
 		if(extrato.isPresent())
 			return new ResponseEntity<Extrato>(extrato.get(), HttpStatus.OK);
-		else
-			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		else {
+			cet = new CustomErrorType("Extrato inexistente!");
+			return new ResponseEntity<>(cet.getErrorMessage(),HttpStatus.OK);
+		}
 	}
 
 	@RequestMapping(value = "/extrato", method =  RequestMethod.POST)
@@ -46,7 +49,7 @@ public class ExtratoController {
 	}
 
 	@RequestMapping(value = "/extrato/{id}", method =  RequestMethod.PUT)
-	public ResponseEntity<Extrato> Atualizar_Extrato(@PathVariable(value = "id") long id, @Valid @RequestBody Extrato newExtrato)
+	public ResponseEntity<?> Atualizar_Extrato(@PathVariable(value = "id") long id, @Valid @RequestBody Extrato newExtrato)
 	{
 		Optional<Extrato> oldExtrato = _extratoRepository.findById(id);
 		if(oldExtrato.isPresent()){
@@ -57,8 +60,10 @@ public class ExtratoController {
 			_extratoRepository.save(extrato);
 			return new ResponseEntity<Extrato>(extrato, HttpStatus.OK);
 		}
-		else
-			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		else {
+			cet = new CustomErrorType("Extrato inexistente!");
+			return new ResponseEntity<>(cet.getErrorMessage(),HttpStatus.OK);
+		}
 	} 
 	
 
@@ -70,7 +75,9 @@ public class ExtratoController {
 			_extratoRepository.delete(extrato.get());
 			return new ResponseEntity<>(HttpStatus.OK);
 		}
-		else
-			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		else {
+			cet = new CustomErrorType("Extrato inexistente!");
+			return new ResponseEntity<>(cet.getErrorMessage(),HttpStatus.OK);
+		}
 	}
 }

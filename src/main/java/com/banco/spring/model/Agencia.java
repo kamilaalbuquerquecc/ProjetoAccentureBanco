@@ -9,6 +9,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
+import javax.validation.constraints.Size;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -21,6 +22,8 @@ private static final long serialVersionUID = 1L;
 	private Long idAgencia;
     private String nomeAgencia;
     private String endereco;
+   
+    @Size(min=11,max=11)
     private String telefone;
     
     @JsonIgnore

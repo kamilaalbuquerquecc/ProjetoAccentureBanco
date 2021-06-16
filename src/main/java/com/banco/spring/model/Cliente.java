@@ -31,6 +31,8 @@ public class Cliente implements Serializable{
 	
 	@Size(min=11,max = 14)
 	private String cpf;
+	
+	@Size(min=11, max=11)
 	private String telefone;
 	
 	@JsonIgnore
@@ -47,6 +49,7 @@ public class Cliente implements Serializable{
 	public Cliente() {
 	}
 
+	
 	public Cliente(Long id, String nome, String cpf, String telefone) {
 		this.id = id;
 		this.nome = nome;
