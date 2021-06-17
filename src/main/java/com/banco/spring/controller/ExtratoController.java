@@ -1,5 +1,6 @@
 package com.banco.spring.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -42,42 +43,16 @@ public class ExtratoController {
 		}
 	}
 
-	@RequestMapping(value = "/extrato", method =  RequestMethod.POST)
-	public Extrato Criar_Extrato(@Valid @RequestBody Extrato extrato)
-	{
-		return _extratoRepository.save(extrato);
+	@RequestMapping(value = "/extrato/contaCorrente/{id}", method = RequestMethod.GET)
+	public List<Extrato> Procurar_Extrato_ContaCorrente(@PathVariable(value = "id") long id) {
+		List<Extrato> todos = _extratoRepository.findAll();
+		List<Extrato> selecionado = new ArrayList<>();
+		for (Extrato ext : todos) {
+			if (ext.getContaCorrente().getId() == id) {
+				selecionado.add(ext);
+			}
+		}
+		return selecionado;
 	}
 
-	@RequestMapping(value = "/extrato/{id}", method =  RequestMethod.PUT)
-	public ResponseEntity<?> Atualizar_Extrato(@PathVariable(value = "id") long id, @Valid @RequestBody Extrato newExtrato)
-	{
-		Optional<Extrato> oldExtrato = _extratoRepository.findById(id);
-		if(oldExtrato.isPresent()){
-			Extrato extrato = oldExtrato.get();
-			extrato.setId(newExtrato.getId());
-			extrato.setDataHoraMovimento(newExtrato.getDataHoraMovimento());
-			extrato.setOperacao(newExtrato.getOperacao());
-			_extratoRepository.save(extrato);
-			return new ResponseEntity<Extrato>(extrato, HttpStatus.OK);
-		}
-		else {
-			cet = new CustomErrorType("Extrato inexistente!");
-			return new ResponseEntity<>(cet.getErrorMessage(),HttpStatus.OK);
-		}
-	} 
-	
-
-	@RequestMapping(value = "/extrato/{id}", method = RequestMethod.DELETE)
-	public ResponseEntity<Object> Deletar_Extrato(@PathVariable(value = "id") long id)
-	{
-		Optional<Extrato> extrato = _extratoRepository.findById(id);
-		if(extrato.isPresent()){
-			_extratoRepository.delete(extrato.get());
-			return new ResponseEntity<>(HttpStatus.OK);
-		}
-		else {
-			cet = new CustomErrorType("Extrato inexistente!");
-			return new ResponseEntity<>(cet.getErrorMessage(),HttpStatus.OK);
-		}
-	}
 }

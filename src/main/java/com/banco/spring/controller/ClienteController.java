@@ -73,20 +73,20 @@ public class ClienteController {
 	}
 
 	@RequestMapping(value = "/cliente/{id}", method = RequestMethod.PUT)
-	public ResponseEntity<?> Atualizar_Cliente(@PathVariable(value = "id") long idCliente, long idAgencia, String nome,
+	public ResponseEntity<?> Atualizar_Cliente(@PathVariable(value = "id") long idCliente, Long idAgencia, String nome,
 			String cpf, String telefone) {
 
 		Optional<Cliente> oldCliente = _clienteRepository.findById(idCliente);
 
 		if (oldCliente.isPresent()) {
 			Cliente cliente = oldCliente.get();
-			if (idAgencia != 0L) {
-				Optional<Agencia> agenciaFind = _agenciaRepository.findById(idAgencia);
-				if (agenciaFind.isPresent()) {
-					Agencia agencia = agenciaFind.get();
-					cliente.setAgencia(agencia);
-				}
-				else {
+			if (idAgencia != null) {
+				Optional<Agencia> agencia = _agenciaRepository.findById(idAgencia);
+				if (agencia.isPresent()) {
+					Agencia agenciaNew = new Agencia();
+					agenciaNew = agencia.get();
+					cliente.setAgencia(agenciaNew);
+				} else {
 					cet = new CustomErrorType("Agencia inexistente!");
 					return new ResponseEntity<>(cet.getErrorMessage(), HttpStatus.NOT_FOUND);
 				}
@@ -113,7 +113,9 @@ public class ClienteController {
 			}
 			_clienteRepository.save(cliente);
 			return new ResponseEntity<Cliente>(cliente, HttpStatus.OK);
-		} else {
+		} else
+
+		{
 			cet = new CustomErrorType("Cliente inexistente!");
 			return new ResponseEntity<>(cet.getErrorMessage(), HttpStatus.NOT_FOUND);
 		}

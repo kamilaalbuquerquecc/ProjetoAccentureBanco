@@ -12,6 +12,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
+import com.banco.spring.repository.ExtratoRepository;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
@@ -34,7 +35,7 @@ public class ContaCorrente implements Serializable {
 	@OnDelete(action = OnDeleteAction.CASCADE)
 	@JoinColumn(name = "idCliente")
 	private Cliente cliente;
-	
+
 	@JsonIgnore
     @OneToMany
     @JoinColumn(name="idConta")
@@ -65,6 +66,14 @@ public class ContaCorrente implements Serializable {
         	conta.deposito(valor);
 		}
     }
+
+	public Set<Extrato> getExtrato() {
+		return extrato;
+	}
+
+	public void setExtrato(Set<Extrato> extrato) {
+		this.extrato = extrato;
+	}
 
 	public Long getId() {
 		return id;

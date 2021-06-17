@@ -26,6 +26,7 @@ public class Extrato implements Serializable {
 	private Long id;
 	private LocalDate dataHoraMovimento;
 	private Operacao operacao;
+	private double valor;
 
 	@JsonIgnore
 	@ManyToOne(fetch = FetchType.LAZY)
@@ -45,10 +46,11 @@ public class Extrato implements Serializable {
 
 	}
 
-	public Extrato(Long id, LocalDate dataHoraMovimento, Operacao operacao) {
+	public Extrato(Long id, LocalDate dataHoraMovimento, Operacao operacao, double valor) {
 		this.id = id;
 		this.dataHoraMovimento = dataHoraMovimento;
 		this.operacao = operacao;
+		this.valor = valor;
 	}
 
 	public Long getId() {
@@ -73,6 +75,14 @@ public class Extrato implements Serializable {
 
 	public void setOperacao(Operacao operacao) {
 		this.operacao = operacao;
+	}
+
+	public double getValor() {
+		return valor;
+	}
+
+	public void setValor(double valor) {
+		this.valor = valor;
 	}
 
 	@Override
