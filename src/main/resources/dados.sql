@@ -1,0 +1,1 @@
+insert into agencia (id_agencia, endereco, nome_agencia, telefone) values (null, 'Rua Jacarandá 2', 'Ag Jacarandá 2', '83 98765-4321 2');
