@@ -10,7 +10,8 @@ numerário.
 ## Estrutura básica
 - Um projeto: BANK;
 - No projeto temos 4 classes RestController que são responsáveis por implementar os endpoints da API Rest.
-- Quatro repositórios são utilizados: AgenciaRepository, ClienteRepository, ContaCorrenteRepository e ExtratoRepository, que são responsáveis por manipular as entidades Agencia, - Cliente, ContaCorrente e Extrato no banco de dados MySQL;
+- Fizemos operações CRUD básicas para listar, buscar, criar, modificar e remover os dados das entities definidas;
+- Quatro repositórios são utilizados: AgenciaRepository, ClienteRepository, ContaCorrenteRepository e ExtratoRepository, que são responsáveis por manipular as entidades Agencia, Cliente, ContaCorrente e Extrato no banco de dados MySQL;
 - O modelo é composto pelas classes Agencia.java, Cliente.java, ContaCorrete.java e Extrato.java que podem ser encontradas no pacote model;
 - Na classe CustomErrorType criamos os metodos que usamos para personalizar as exceções;
 - No package de testes criamos 3 clases com JUnit que testam criar, atualizar e deletar objetos dos repositórios.
