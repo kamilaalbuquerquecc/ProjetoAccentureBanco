@@ -1,28 +1,29 @@
 package com.banco.spring.controller;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-
-import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.banco.spring.exceptions.CustomErrorType;
+import com.banco.spring.model.ContaCorrente;
 import com.banco.spring.model.Extrato;
+import com.banco.spring.repository.ContaCorrenteRepository;
 import com.banco.spring.repository.ExtratoRepository;
 
 @RestController
 public class ExtratoController {
 	@Autowired
 	private ExtratoRepository _extratoRepository;
+
+	@Autowired
+	private ContaCorrenteRepository _contaCorrenteRepository;
 
 	private CustomErrorType cet;
 
@@ -39,20 +40,21 @@ public class ExtratoController {
 			return new ResponseEntity<Extrato>(extrato.get(), HttpStatus.OK);
 		else {
 			cet = new CustomErrorType("Extrato inexistente!");
-			return new ResponseEntity<>(cet.getErrorMessage(),HttpStatus.OK);
+			return new ResponseEntity<>(cet.getErrorMessage(),HttpStatus.NOT_FOUND);
 		}
 	}
 
 	@RequestMapping(value = "/extrato/contaCorrente/{id}", method = RequestMethod.GET)
-	public List<Extrato> Procurar_Extrato_ContaCorrente(@PathVariable(value = "id") long id) {
-		List<Extrato> todos = _extratoRepository.findAll();
-		List<Extrato> selecionado = new ArrayList<>();
-		for (Extrato ext : todos) {
-			if (ext.getContaCorrente().getId() == id) {
-				selecionado.add(ext);
-			}
+	public ResponseEntity<?> Procurar_Extrato_ContaCorrente(@PathVariable(value = "id") long id) {
+		Optional<ContaCorrente> conta = _contaCorrenteRepository.findById(id);
+		if (conta.isPresent()) {
+			ContaCorrente contaCorrente = conta.get();
+			return new ResponseEntity<>(contaCorrente.getExtrato(), HttpStatus.OK);
 		}
-		return selecionado;
+		else {
+			cet = new CustomErrorType("Conta inexistente!");
+			return new ResponseEntity<>(cet.getErrorMessage(),HttpStatus.NOT_FOUND);
+		}
 	}
 
 }
